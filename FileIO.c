@@ -15,7 +15,6 @@ FileStruct WriteFile(const char* Dest, char* Source, BOOLEAN Overwrite)
 
 	RtlInitUnicodeString(&UnicodePrefix, L"\\DosDevices\\");
 
-
 	ANSI_STRING ANSIPath;
 	RtlInitAnsiString(&ANSIPath, Dest);
 	RtlAnsiStringToUnicodeString(&UnicodeFileName, &ANSIPath, TRUE);
@@ -57,7 +56,6 @@ FileStruct ReadFile(const char* Source)
 	UNICODE_STRING ConcatString;
 
 	RtlInitUnicodeString(&UnicodePrefix, L"\\DosDevices\\");
-
 
 	ANSI_STRING ANSIPath;
 	RtlInitAnsiString(&ANSIPath, Source);
