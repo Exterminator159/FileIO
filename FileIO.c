@@ -8,7 +8,6 @@ FileStruct WriteFile(const char* Dest, char* Source, BOOLEAN Overwrite)
 	IO_STATUS_BLOCK IOStatusBlock;
 
 	NTSTATUS Status;
-	FileStruct ReturnStruct;
 
 	UNICODE_STRING UnicodeFileName;
 	UNICODE_STRING UnicodePrefix;
@@ -37,8 +36,7 @@ FileStruct WriteFile(const char* Dest, char* Source, BOOLEAN Overwrite)
 	ZwClose(File);
 	RtlFreeUnicodeString(&UnicodeFileName);
 
-	ReturnStruct.Status = Status;
-	ReturnStruct.Value = Source;
+	FileStruct ReturnStruct = { Status, Source };
 	return ReturnStruct;
 }
 
@@ -52,8 +50,7 @@ FileStruct ReadFile(const char* Source)
 	ByteOffset.HighPart = 0;
 
 	NTSTATUS Status;
-	char ReadValue[1024];
-	FileStruct ReturnStruct;
+	char ReadValue[1024] = "";
 
 	UNICODE_STRING UnicodeFileName;
 	UNICODE_STRING UnicodePrefix;
@@ -82,7 +79,6 @@ FileStruct ReadFile(const char* Source)
 	ZwClose(File);
 	RtlFreeUnicodeString(&UnicodeFileName);
 
-	ReturnStruct.Status = Status;
-	ReturnStruct.Value = ReadValue;
+	FileStruct ReturnStruct = { Status, ReadValue };
 	return ReturnStruct;
 }
