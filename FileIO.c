@@ -37,7 +37,7 @@ FileStruct WriteFile(const char* Dest, char* Source, BOOLEAN Overwrite)
 
 	FileStruct ReturnStruct;
 	ReturnStruct.Status = Status;
-	ReturnStruct.Value = ReadValue;
+	ReturnStruct.Value = Source;
 	return ReturnStruct;
 }
 
