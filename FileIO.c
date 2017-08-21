@@ -27,12 +27,13 @@ FileStruct WriteFile(const char* Dest, char* Source, BOOLEAN Overwrite)
 	RtlAppendUnicodeStringToString(&ConcatString, &UnicodeFileName);
 
 	InitializeObjectAttributes(&ObjectAttribs, &ConcatString, OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, NULL, NULL);
-	Status = ZwCreateFile(&File, GENERIC_WRITE, &ObjectAttribs, &IOStatusBlock, NULL, FILE_ATTRIBUTE_NORMAL, 0, ((Overwrite) ? FILE_OVERWRITE_IF : FILE_OPEN_IF), FILE_SYNCHRONOUS_IO_NONALERT, NULL, 0);
+	Status = (Overwrite) ? ZwCreateFile(&File, GENERIC_WRITE, &ObjectAttribs, &IOStatusBlock, NULL, FILE_ATTRIBUTE_NORMAL, 0, ((Overwrite) ? FILE_OVERWRITE_IF : FILE_OPEN_IF), FILE_SYNCHRONOUS_IO_NONALERT, NULL, 0) : ZwOpenFile(&File, GENERIC_WRITE, &ObjectAttribs, &IOStatusBlock, 0, FILE_SYNCHRONOUS_IO_NONALERT);
 	if (NT_SUCCESS(Status))
 	{
 		Status = ZwWriteFile(File, NULL, NULL, NULL, &IOStatusBlock, Source, (ULONG)strlen(Source) + 1, NULL, NULL);
+		if (NT_SUCCESS(Status))
+			Status = ZwClose(File);
 	}
-	ZwClose(File);
 	RtlFreeUnicodeString(&UnicodeFileName);
 
 	FileStruct ReturnStruct;
@@ -46,9 +47,7 @@ FileStruct ReadFile(const char* Source)
 	HANDLE File;
 	OBJECT_ATTRIBUTES ObjectAttribs;
 	IO_STATUS_BLOCK IOStatusBlock;
-	LARGE_INTEGER ByteOffset;
-	ByteOffset.LowPart = 0;
-	ByteOffset.HighPart = 0;
+	LARGE_INTEGER ByteOffset = { 0, 0 };
 
 	NTSTATUS Status;
 	char ReadValue[1024] = "";
@@ -71,12 +70,13 @@ FileStruct ReadFile(const char* Source)
 	RtlAppendUnicodeStringToString(&ConcatString, &UnicodeFileName);
 
 	InitializeObjectAttributes(&ObjectAttribs, &ConcatString, OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, NULL, NULL);
-	Status = ZwCreateFile(&File, GENERIC_READ, &ObjectAttribs, &IOStatusBlock, NULL, FILE_ATTRIBUTE_NORMAL, 0, FILE_OPEN, FILE_SYNCHRONOUS_IO_NONALERT, NULL, 0);
+	Status = ZwOpenFile(&File, GENERIC_READ, &ObjectAttribs, &IOStatusBlock, 0, FILE_SYNCHRONOUS_IO_NONALERT);
 	if (NT_SUCCESS(Status))
 	{
 		Status = ZwReadFile(File, NULL, NULL, NULL, &IOStatusBlock, ReadValue, 1024, &ByteOffset, NULL);
+		if (NT_SUCCESS(Status))
+			Status = ZwClose(File);
 	}
-	ZwClose(File);
 	RtlFreeUnicodeString(&UnicodeFileName);
 
 	FileStruct ReturnStruct;
