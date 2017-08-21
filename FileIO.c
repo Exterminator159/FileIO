@@ -35,7 +35,9 @@ FileStruct WriteFile(const char* Dest, char* Source, BOOLEAN Overwrite)
 	ZwClose(File);
 	RtlFreeUnicodeString(&UnicodeFileName);
 
-	FileStruct ReturnStruct = { Status, Source };
+	FileStruct ReturnStruct;
+	ReturnStruct.Status = Status;
+	ReturnStruct.Value = ReadValue;
 	return ReturnStruct;
 }
 
@@ -77,6 +79,8 @@ FileStruct ReadFile(const char* Source)
 	ZwClose(File);
 	RtlFreeUnicodeString(&UnicodeFileName);
 
-	FileStruct ReturnStruct = { Status, ReadValue };
+	FileStruct ReturnStruct;
+	ReturnStruct.Status = Status;
+	ReturnStruct.Value = ReadValue;
 	return ReturnStruct;
 }
