@@ -113,16 +113,8 @@ BOOLEAN FileExists(const char* path)
 
 	InitializeObjectAttributes(&ObjectAttribs, &ConcatString, OBJ_KERNEL_HANDLE, NULL, NULL);
 	Status = ZwOpenFile(&File, GENERIC_ALL, &ObjectAttribs, &IOStatusBlock, 0, FILE_SYNCHRONOUS_IO_NONALERT);
-
-	if (NT_SUCCESS(Status))
-	{
-		ReturnValue = TRUE;
-		ZwClose(File);
-	}
-	else
-		ReturnValue = FALSE;
-
+	ZwClose(File);
 	RtlFreeUnicodeString(&UnicodeFileName);
-
-	return ReturnValue;
+	
+	return NT_SUCCESS(Status);
 }
