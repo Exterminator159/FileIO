@@ -10,9 +10,11 @@
 typedef struct _FileStruct
 {
 	NTSTATUS Status;
-	char* Value;
+	PVOID Value;
 }FileStruct;
 
-FileStruct WriteFile(const char* Dest, char* Source, BOOLEAN Overwrite);
+FileStruct WriteFile(const char* Dest, PVOID Source, ULONG size, BOOLEAN Overwrite);
 
-FileStruct ReadFile(const char* Source);
+FileStruct ReadFile(const char* Source, ULONG Size);
+
+BOOLEAN FileExists(const char* path);
