@@ -25,7 +25,7 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)
 	if(!FileExists("C:\\example.txt")
 	{
 		char* text = "WriteFile!";
-		FileStruct WriteStatus = WriteFile("C:\\example.txt", (void*)text, (ULONG)strlen(text), FALSE);
+		FileStruct WriteStatus = WriteFile("C:\\example.txt", (void*)text, (ULONG)strlen(text)+1, FALSE);
 		if (NT_SUCCESS(WriteStatus.Status))
 		{
 			FileStruct ReadStatus = ReadFile("C:\\example.txt", 1024);
